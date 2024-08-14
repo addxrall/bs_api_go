@@ -1,31 +1,17 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"os"
+	"net/http"
 
-	"github.com/addxrall/bs_api_go/db"
-	"github.com/jackc/pgx/v5"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	dbString := os.Getenv("GOOSE_DBSTRING")
-	ctx := context.Background()
-
-	conn, err := pgx.Connect(ctx, dbString)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close(ctx)
-
-	queries := db.New(conn)
-
-	books, err := queries.GetAllBooks(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Print(books)
-
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello world"))
+	})
+	http.ListenAndServe(":2137", r)
 }

@@ -1,17 +1,17 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/addxrall/bs_api_go/routes"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	})
-	http.ListenAndServe(":2137", r)
+	app := fiber.New()
+
+	app.Use(logger.New())
+
+	routes.SetupRoutes(app)
+
+	app.Listen(":2137")
 }

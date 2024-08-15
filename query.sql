@@ -27,3 +27,12 @@ INSERT INTO reviews (reviewed_user_id, reviewer_id, rating, review_text)
 VALUES ($1, $2, $3, $4)
 RETURNING *;
 
+-- name: FindUserByEmail :one
+SELECT user_id, username, email, password
+FROM users
+WHERE email = $1;
+
+-- name: FindUserByUsername :one
+SELECT user_id, username, email, password
+FROM users
+WHERE username = $1;

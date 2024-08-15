@@ -148,6 +148,56 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const findUserByEmail = `-- name: FindUserByEmail :one
+SELECT user_id, username, email, password
+FROM users
+WHERE email = $1
+`
+
+type FindUserByEmailRow struct {
+	UserID   int32
+	Username string
+	Email    string
+	Password string
+}
+
+func (q *Queries) FindUserByEmail(ctx context.Context, email string) (FindUserByEmailRow, error) {
+	row := q.db.QueryRow(ctx, findUserByEmail, email)
+	var i FindUserByEmailRow
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
+}
+
+const findUserByUsername = `-- name: FindUserByUsername :one
+SELECT user_id, username, email, password
+FROM users
+WHERE username = $1
+`
+
+type FindUserByUsernameRow struct {
+	UserID   int32
+	Username string
+	Email    string
+	Password string
+}
+
+func (q *Queries) FindUserByUsername(ctx context.Context, username string) (FindUserByUsernameRow, error) {
+	row := q.db.QueryRow(ctx, findUserByUsername, username)
+	var i FindUserByUsernameRow
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
+}
+
 const getAllBooks = `-- name: GetAllBooks :many
 SELECT book_id, user_id, title, author, genre, condition, description, image_url, created_at FROM books
 `

@@ -2,3 +2,4 @@
 export GOOSE_DRIVER=postgres
 export GOOSE_DBSTRING=user="connection_string"
 export GOOSE_MIGRATION_DIR="./db/migrations/"
+export JWT="secret"

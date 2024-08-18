@@ -121,9 +121,12 @@ func Login(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{"token": tokenString})
 }
 
-// TODO: logout not really deletes a cookie, mayby its only postman thing
 func Logout(c *fiber.Ctx) error {
-	c.ClearCookie("token")
+	c.Cookie(&fiber.Cookie{
+		Name:    "token",
+		Value:   "",
+		Expires: time.Now().Add(-(time.Hour * 2)),
+	})
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "Logout Successful"})
 }
 
@@ -139,7 +142,7 @@ func Session(c *fiber.Ctx) error {
 	})
 
 	if err != nil || !token.Valid {
-		return c.Status(http.StatusOK).JSON(nil)
+		return c.Status(http.StatusNotFound).JSON(nil)
 	}
 
 	return c.Status(http.StatusOK).JSON(claims)

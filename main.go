@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/addxrall/bs_api_go/middleware"
 	"github.com/addxrall/bs_api_go/routes"
 	"github.com/addxrall/bs_api_go/services"
 	"github.com/gofiber/fiber/v2"
@@ -27,7 +28,11 @@ func main() {
 
 	services.InitServices(conn)
 
-	routes.SetupRoutes(app)
+	api := app.Group("/api")
+
+	routes.AuthRoutes(api)
+	api.Use(middleware.AuthCheckHandler)
+	routes.UserRoutes(api)
 
 	log.Fatal(app.Listen(":2137"))
 }
